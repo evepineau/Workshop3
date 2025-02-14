@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyNrNcd6N3JHxnckbcZ8+ffW",
+      "authorship_tag": "ABX9TyOOsJiHOIUbpUsCMm7a1zEQ",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -28,12 +28,26 @@
     },
     {
       "cell_type": "code",
-      "execution_count": null,
+      "execution_count": 2,
       "metadata": {
-        "id": "--TrIBlKsm9_"
+        "id": "--TrIBlKsm9_",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "0c1255f0-4f7b-4602-905f-d37a149c78e4"
       },
-      "outputs": [],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Random Forest Accuracy: 1.00\n",
+            "Random Forest model saved to C:\\Users\\evepi\\OneDrive - De Vinci\\ESILV\\A4\\S8\\Decentralization Technologies\\Workshop3_EvePINEAU_CDOF6\\Workshop3/random_forest_model.pkl\n"
+          ]
+        }
+      ],
       "source": [
+        "import os\n",
         "import pickle\n",
         "import numpy as np\n",
         "from sklearn.datasets import load_iris\n",
@@ -41,18 +55,27 @@
         "from sklearn.ensemble import RandomForestClassifier\n",
         "from sklearn.metrics import accuracy_score\n",
         "\n",
+        "# Define the save directory\n",
+        "save_directory = r\"C:\\Users\\evepi\\OneDrive - De Vinci\\ESILV\\A4\\S8\\Decentralization Technologies\\Workshop3_EvePINEAU_CDOF6\\Workshop3\"\n",
+        "os.makedirs(save_directory, exist_ok=True)\n",
+        "\n",
+        "# Load the Iris dataset\n",
         "iris = load_iris()\n",
         "X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)\n",
         "\n",
+        "# Train Random Forest Model\n",
         "rf_model = RandomForestClassifier(n_estimators=100, random_state=42)\n",
         "rf_model.fit(X_train, y_train)\n",
         "\n",
+        "# Evaluate accuracy\n",
         "y_pred = rf_model.predict(X_test)\n",
         "print(f\"Random Forest Accuracy: {accuracy_score(y_test, y_pred):.2f}\")\n",
         "\n",
-        "with open(\"random_forest_model.pkl\", \"wb\") as f:\n",
+        "# Save the model\n",
+        "model_path = os.path.join(save_directory, \"random_forest_model.pkl\")\n",
+        "with open(model_path, \"wb\") as f:\n",
         "    pickle.dump(rf_model, f)\n",
-        "print(\"Random Forest model saved.\")"
+        "print(f\"Random Forest model saved to {model_path}\")\n"
       ]
     }
   ]
