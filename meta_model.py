@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyPeczt0qM00+ompj6mvu4QS",
+      "authorship_tag": "ABX9TyPvBUsRIijz55Hjy0meOmAh",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -28,47 +28,70 @@
     },
     {
       "cell_type": "code",
-      "execution_count": null,
+      "execution_count": 3,
       "metadata": {
-        "id": "hq_L6lR5tNM1"
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hq_L6lR5tNM1",
+        "outputId": "18864ebb-bd3a-427b-baaf-203825449099"
       },
-      "outputs": [],
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'individual_predictions': {'Logistic Regression': 'Setosa', 'Random Forest': 'Setosa', 'SVM': 'Setosa'}, 'final_prediction': 'Setosa'}\n"
+          ]
+        }
+      ],
       "source": [
-        "import pickle\n",
-        "import numpy as np\n",
+        "import requests\n",
         "from collections import Counter\n",
         "\n",
-        "def load_model(model_path):\n",
-        "    with open(model_path, \"rb\") as f:\n",
-        "        return pickle.load(f)\n",
+        "# API endpoints\n",
+        "MODEL_URLS = {\n",
+        "    \"logistic\": \"http://127.0.0.1:5001/predict\",\n",
+        "    \"random_forest\": \"http://127.0.0.1:5002/predict\",\n",
+        "    \"svm\": \"http://127.0.0.1:5003/predict\"\n",
+        "}\n",
         "\n",
-        "def get_prediction(features):\n",
-        "    models = {\n",
-        "        \"Logistic Regression\": load_model(\"logistic_model.pkl\"),\n",
-        "        \"Random Forest\": load_model(\"random_forest_model.pkl\"),\n",
-        "        \"SVM\": load_model(\"svm_model.pkl\"),\n",
-        "    }\n",
+        "# Model weights (Proof-of-Stake simulation)\n",
+        "MODEL_WEIGHTS = {\n",
+        "    \"logistic\": 1.0,\n",
+        "    \"random_forest\": 1.2,\n",
+        "    \"svm\": 0.8\n",
+        "}\n",
         "\n",
-        "    predictions = {}\n",
-        "    for name, model in models.items():\n",
-        "        pred = model.predict([features])[0]\n",
-        "        predictions[name] = [\"Setosa\", \"Versicolor\", \"Virginica\"][pred]\n",
+        "# Sample features\n",
+        "params = {\n",
+        "    \"sepal_length\": 5.1,\n",
+        "    \"sepal_width\": 3.5,\n",
+        "    \"petal_length\": 1.4,\n",
+        "    \"petal_width\": 0.2\n",
+        "}\n",
         "\n",
-        "    return predictions\n",
+        "def get_prediction():\n",
+        "    weighted_predictions = []\n",
         "\n",
-        "def meta_model_prediction(features):\n",
-        "    predictions = get_prediction(features)\n",
-        "    prediction_values = list(predictions.values())\n",
+        "    for model_name, url in MODEL_URLS.items():\n",
+        "        response = requests.get(url, params=params)\n",
+        "        if response.status_code == 200:\n",
+        "            pred = response.json()[\"prediction\"]\n",
+        "            weighted_predictions.extend([pred] * int(MODEL_WEIGHTS[model_name] * 10))\n",
         "\n",
-        "    final_prediction = Counter(prediction_values).most_common(1)[0][0]\n",
+        "    return weighted_predictions\n",
+        "\n",
+        "def meta_model_prediction():\n",
+        "    predictions = get_prediction()\n",
+        "    final_prediction = Counter(predictions).most_common(1)[0][0]\n",
         "\n",
         "    return {\n",
         "        \"individual_predictions\": predictions,\n",
         "        \"final_prediction\": final_prediction\n",
         "    }\n",
         "\n",
-        "test_features = [5.1, 3.5, 1.4, 0.2]\n",
-        "print(meta_model_prediction(test_features))\n"
+        "print(meta_model_prediction())"
       ]
     }
   ]
