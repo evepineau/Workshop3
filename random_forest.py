@@ -21,10 +21,7 @@
       "metadata": {
         "id": "view-in-github",
         "colab_type": "text"
-      },
-      "source": [
-        "<a href=\"https://colab.research.google.com/github/evepineau/Workshop3/blob/main/random_forest.py\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
-      ]
+      }
     },
     {
       "cell_type": "code",
